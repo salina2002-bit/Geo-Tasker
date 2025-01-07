@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoTasker - Login</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #3498db, #8e44ad);
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        width: 100%;
+        max-width: 1000px;
+        display: flex;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .logo-section {
+        background: linear-gradient(135deg, #2980b9, #8e44ad);
+        padding: 40px;
+        flex: 1;
+        color: white;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-section:hover {
+        transform: scale(1.02);
+      }
+
+      .logo-circle {
+        width: 120px;
+        height: 120px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+        animation: pulse 2s infinite;
+      }
+
+      .logo-circle i {
+        font-size: 50px;
+        color: #2980b9;
+      }
+
+      .form-section {
+        flex: 1;
+        padding: 40px;
+      }
+
+      .form-group {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .form-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px 40px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus {
+        border-color: #3498db;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background 0.3s ease;
+      }
+
+      button:hover {
+        background: #2980b9;
+        transform: scale(1.02);
+      }
+
+      .toggle-form {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .toggle-form a {
+        color: #3498db;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+        .logo-section {
+          padding: 20px;
+        }
+      }
+
+      .error-message {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+        animation: shake 0.5s ease;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo-section">
+        <h1>GeoTasker</h1>
+        <div class="logo-circle">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <p id="welcome-text">Welcome back!</p>
+      </div>
+      <div class="form-section">
+        <h2 id="form-title" style="text-align: center; margin-bottom: 30px">
+          Login
+        </h2>
+        <form id="auth-form" method="POST" action="">
+          {% csrf_token %}
+          <div class="form-group">
+            <i class="fas fa-user"></i>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              required
+            />
+          </div>
+          <div class="form-group" id="email-group" style="display: none">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" placeholder="Email" />
+          </div>
+          <div class="form-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div
+            class="form-group"
+            id="confirm-password-group"
+            style="display: none"
+          >
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              placeholder="Confirm Password"
+            />
+          </div>
+          <div class="error-message">
+            {% for message in messages %}
+            <p style="color: #e74c3c">{{ message }}</p>
+            {% endfor %}
+          </div>
+          <button type="submit" id="submit-btn">Login</button>
+        </form>
+        <div class="toggle-form">
+          <a onclick="toggleForm()" id="toggle-btn"
+            >Don't have an account? Register</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let isLogin = true;
+      let registeredUsers =
+        JSON.parse(localStorage.getItem("registeredUsers")) || [];
+
+      function showError(message) {
+        const errorMsg = document.getElementById("error-msg");
+        errorMsg.textContent = message;
+        errorMsg.style.display = "block";
+        errorMsg.style.animation = "none";
+        errorMsg.offsetHeight; // Trigger reflow
+        errorMsg.style.animation = "shake 0.5s ease";
+      }
+
+      function toggleForm() {
+        isLogin = !isLogin;
+        const emailGroup = document.getElementById("email-group");
+        const confirmPasswordGroup = document.getElementById(
+          "confirm-password-group"
+        );
+        const formTitle = document.getElementById("form-title");
+        const submitBtn = document.getElementById("submit-btn");
+        const toggleBtn = document.getElementById("toggle-btn");
+        const welcomeText = document.getElementById("welcome-text");
+        const errorMsg = document.getElementById("error-msg");
+
+        // Reset form and hide error message
+        document.getElementById("auth-form").reset();
+        errorMsg.style.display = "none";
+
+        if (isLogin) {
+          emailGroup.style.display = "none";
+          confirmPasswordGroup.style.display = "none";
+          formTitle.textContent = "Login";
+          submitBtn.textContent = "Login";
+          toggleBtn.textContent = "Don't have an account? Register";
+          welcomeText.textContent = "Welcome back!";
+        } else {
+          emailGroup.style.display = "block";
+          confirmPasswordGroup.style.display = "block";
+          formTitle.textContent = "Create Account";
+          submitBtn.textContent = "Register";
+          toggleBtn.textContent = "Already have an account? Login";
+          welcomeText.textContent = "Join our community!";
+        }
+      }
+
+      function handleSubmit(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        if (!isLogin) {
+          const email = document.getElementById("email").value;
+          const confirmPassword =
+            document.getElementById("confirm-password").value;
+
+          if (password !== confirmPassword) {
+            showError("Passwords do not match!");
+            return;
+          }
+
+          // Check if username already exists
+          if (registeredUsers.some((user) => user.username === username)) {
+            showError("Username already exists!");
+            return;
+          }
+
+          // Register new user
+          registeredUsers.push({ username, password, email });
+          localStorage.setItem(
+            "registeredUsers",
+            JSON.stringify(registeredUsers)
+          );
+
+          // Switch to login form
+          isLogin = true;
+          toggleForm();
+          showError(
+            "Registration successful! Please login with your credentials."
+          );
+        } else {
+          // Login validation
+          const user = registeredUsers.find(
+            (u) => u.username === username && u.password === password
+          );
+
+          if (user) {
+            // Successful login
+            localStorage.setItem("currentUser", username);
+            window.location.href = "main.html";
+          } else {
+            showError("Invalid username or password!");
+          }
+        }
+      }
+
+      // Check if user is already logged in
+      if (localStorage.getItem("currentUser")) {
+        window.location.href = "main.html";
+      }
+    </script>
+  </body>
+</html>

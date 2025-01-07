@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, hsl(229, 28%, 57%) 0%, #d8ddef 100%);
+            --nav-gradient: linear-gradient(to right, #9db0d4, #243b55);
+            --header-gradient: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            --button-gradient: linear-gradient(45deg, #00b09b, #96c93d);
+            --content-bg: rgba(13, 29, 31, 0.8);
+            --hover-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--primary-gradient);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--nav-gradient);
+            padding: 1rem;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.scrolled {
+            background: rgba(44, 50, 61, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: #96c93d;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Enhanced Header */
+        header {
+            margin-top: 70px;
+            text-align: center;
+            padding: 25px;
+            background: var(--header-gradient);
+            color: #ffffff;
+            font-size: 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.784), transparent);
+            animation: shine 3s infinite;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #96c93d;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .objectives-list {
+            display: grid;
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .objective-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .objective-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #96c93d;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .objective-item h3 {
+            color: #96c93d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .objective-item p {
+            color: #e2e8f0;
+        }
+
+        @keyframes shine {
+            to {
+                left: 100%;
+            }
+        }
+
+        .section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1200px;
+            z-index: 2;
+        }
+
+        .content {
+            max-width: 45%;
+            background: var(--content-bg);
+            padding: 35px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(248, 244, 244, 0.776);
+        }
+
+        .content:hover {
+            transform: scale(1.03) translateY(-8px);
+            box-shadow: var(--hover-shadow);
+            border-color: rgba(246, 244, 244, 0.965);
+        }
+
+        .content h2 {
+            margin-bottom: 1.2rem;
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #ffffff, #96c93d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        .content p {
+            font-size: 18px;
+            text-align: justify;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+
+        .content button {
+            margin-top: 25px;
+            padding: 14px 28px;
+            font-size: 16px;
+            background: var(--button-gradient);
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+        }
+
+        .content button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(227, 233, 232, 0.3);
+        }
+
+        .content button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .content button:hover::before {
+            left: 100%;
+        }
+
+        .weather-section {
+            position: relative;
+        }
+
+        .weather-section video {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            object-fit: cover;
+            filter: brightness(0.8);
+        }
+
+        .scroll {
+            position: absolute;
+            bottom: 25px;
+            font-size: 28px;
+            color: #ffffff;
+            cursor: pointer;
+            animation: floatBounce 2s ease-in-out infinite;
+            z-index: 3;
+            transition: all 0.4s ease;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .scroll:hover {
+            transform: scale(1.3);
+            color: #96c93d;
+        }
+        .documentation-section {
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            padding: 4rem 2rem;
+            min-height: 100vh;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .documentation-section {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .doc-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .doc-title {
+            color: #96c93d;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .doc-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #96c93d;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-card h3 {
+            color: #96c93d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .doc-card-content {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .doc-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .doc-title {
+                font-size: 1.8rem;
+            }
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .objective-item:nth-child(1) { animation-delay: 0.1s; }
+        .objective-item:nth-child(2) { animation-delay: 0.2s; }
+        .objective-item:nth-child(3) { animation-delay: 0.3s; }
+        .objective-item:nth-child(4) { animation-delay: 0.4s; }
+        .objective-item:nth-child(5) { animation-delay: 0.5s; }
+        .objective-item:nth-child(6) { animation-delay: 0.6s; }
+        .objective-item:nth-child(7) { animation-delay: 0.7s; }
+        .objective-item:nth-child(8) { animation-delay: 0.8s; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+                margin-top: 3rem;
+            }
+
+            .back-button {
+                top: 1rem;
+                transform: none;
+            }
+
+            .objective-item {
+                padding: 1.2rem;
+            }
+        }
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Animation delays for cards */
+        .doc-card:nth-child(1) {
+            animation: fadeInUp 0.5s ease forwards 0.2s;
+        }
+        
+        .doc-card:nth-child(2) {
+            animation: fadeInUp 0.5s ease forwards 0.4s;
+        }
+        
+        .doc-card:nth-child(3) {
+            animation: fadeInUp 0.5s ease forwards 0.6s;
+        }
+        
+        .doc-card:nth-child(4) {
+            animation: fadeInUp 0.5s ease forwards 0.8s;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .doc-title {
+                font-size: 2rem;
+            }
+        
+            .doc-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        
+            .doc-card {
+                padding: 1.5rem;
+            }
+        
+            .doc-card h3 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Hover Effects */
+        .doc-card .icon {
+            font-size: 2.5rem;
+            color: #96c93d;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .doc-card:hover .icon {
+            transform: scale(1.2);
+        }
+        
+        /* Gradient Text Effect */
+        .gradient-text {
+            background: linear-gradient(45deg, #96c93d, #00b09b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+
+        @keyframes floatBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg,rgba(23, 34, 42, 0.3), rgba(196, 91, 242, 0.3));
+            z-index: 1;
+        }
+
+        /* Enhanced Mobile Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background-color: #ffffff;
+            transition: all 0.4s ease;
+            border-radius: 3px;
+        }
+
+        .menu-toggle span.active:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .menu-toggle span.active:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle span.active:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--nav-gradient);
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1.2rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 10px 20px rgba(235, 8, 8, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+                animation: slideDown 0.4s ease-out forwards;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .content {
+                max-width: 90%;
+            }
+
+            .content-wrapper {
+                flex-direction: column !important;
+                gap: 2.5rem;
+            }
+
+            header {
+                font-size: 24px;
+                padding: 20px;
+            }
+        }
+        .rating-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--content-bg);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #808080;
+            transition: color 0.3s ease;
+        }
+        
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+        }
+        
+        .rating-text {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        
+        /* Right align content for right sections */
+        .right .content-wrapper {
+            justify-content: flex-end;
+        }
+        
+        /* Left align content for left sections */
+        .left .content-wrapper {
+            justify-content: flex-start;
+        }
+        
+        /* Handle mobile alignment */
+        @media (max-width: 768px) {
+            .rating-container {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px;
+            }
+            
+            .right .content-wrapper,
+            .left .content-wrapper {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- New Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">Dashboard</a>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#weather">Weather</a>
+                <a href="#air">Air Quality</a>
+                <a href="#geo">Geolocation</a>
+                <a href="#route">Route</a>
+                <a href="#facilities">Facilities</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>Welcome to Dashboard</header>
+
+    <!-- Weather Section -->
+     <div id="weather" class="section weather-section right">
+        <video autoplay muted loop>
+            <source src="weather.mp4" type="video/mp4">
+        </video>
+        <div class="content-wrapper">
+            <div class="content">
+                <h2>Real-time Weather and UV Index</h2>
+                <p>Stay informed with real-time weather updates and UV index information to plan your day effectively.</p>
+                <button onclick="window.location.href='{% url 'weather' %}'">Real-time Weather and UV Index</button>
+
+            </div>
+        </div>
+        <div class="scroll" onclick="document.querySelector('.air-section').scrollIntoView({ behavior: 'smooth' })">&#x2193;</div>
+    </div>
+
+    <!-- Air Quality Section -->
+<!-- Air Quality Section -->
+<div id="air" class="section air-section left">
+    <div class="content-wrapper">
+        <div class="content">
+            <h2>Air Quality Index</h2>
+            <p>Understand the air quality index and its impact on health and environment for better living.</p>
+            <button onclick="window.location.href='air.html'">Air Quality</button>
+        </div>
+        <img src="airpollution.webp" alt="Air Quality GIF" style="transform: rotate(-30deg); margin-left: 200px; border-radius: 50%; width: 300px; height: 300px;" />
+        </div>
+        
+        
+    <div class="scroll" onclick="document.querySelector('.geo-section').scrollIntoView({ behavior: 'smooth' })">&#x2193;</div>
+</div>
+
+
+
+<!-- Geolocation Section -->
+<div id="geo" class="section geo-section right">
+        <div class="content-wrapper">
+            <div class="content">
+                <h2>Geolocation</h2>
+                <p>Explore geolocation services to find and navigate your current position with ease.</p>
+                <button onclick="window.location.href='geolocation.html'">Geolocation</button>
+            </div>
+        </div>
+        <div class="scroll" onclick="document.querySelector('.route-section').scrollIntoView({ behavior: 'smooth' })">&#x2193;</div>
+</div>
+
+    <!-- Route Section -->
+<div id="route" class="section route-section left">
+        <div class="content-wrapper">
+            <div class="content">
+                <h2>Route Instruction</h2>
+                <p>Get clear and precise instructions to navigate routes and reach your destination effortlessly.</p>
+                <button onclick="window.location.href='instruction.html'">Route Instruction</button>
+            </div>
+        </div>
+        <div class="scroll" onclick="document.querySelector('.facilities-section').scrollIntoView({ behavior: 'smooth' })">&#x2193;</div>
+    </div>
+
+    <!-- Facilities Section -->
+    <div id="facilities" class="section facilities-section right">
+        <div class="content-wrapper">
+            <div class="content">
+                <h2>Facilities Information</h2>
+                <p>Discover nearby facilities and their details to make the most out of your journey.</p>
+                <button onclick="window.location.href='facilities.html'">Facilities</button>
+            </div>
+        </div>
+    
+    </div>
+    <div id="facilities" class="section facilities-section left">
+        <div class="content-wrapper">
+            <div class="content">
+                <h2>Facilities Information</h2>
+                <p>Discover nearby facilities and their details to make the most out of your journey.</p>
+                <button onclick="window.location.href='facilities.html'">Facilities</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="rating-container">
+        <div class="rating-text">Rate your experience</div>
+        <div class="rating-stars">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+        </div>
+    <!-- Replace your existing documentation section with this -->
+    
+
+    <script>
+
+        const stars = document.querySelectorAll('.star');
+        let userRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', () => {
+                const rating = star.dataset.rating;
+                highlightStars(rating);
+            });
+
+            star.addEventListener('mouseout', () => {
+                highlightStars(userRating);
+            });
+
+            star.addEventListener('click', () => {
+                userRating = star.dataset.rating;
+                highlightStars(userRating);
+                // You can add functionality here to save the rating
+                console.log(`User rated: ${userRating} stars`);
+            });
+        });
+
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                star.classList.toggle('active', star.dataset.rating <= rating);
+            });
+        }
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        function reveal() {
+            var reveals = document.querySelectorAll(".doc-card");
+            
+            reveals.forEach((reveal) => {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveal.getBoundingClientRect().top;
+                var elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add("active");
+                }
+            });
+        }
+        
+        window.addEventListener("scroll", reveal);
+        // Trigger on initial load
+        reveal();
+
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const spans = menuToggle.querySelectorAll('span');
+            spans.forEach(span => span.classList.toggle('active'));
+        });
+    </script>
+</body>
+</html>
