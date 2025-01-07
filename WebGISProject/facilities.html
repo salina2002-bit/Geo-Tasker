@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Bus Stops and Hospitals Locator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="facis.js" defer></script>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            margin: 0;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-top: 20px;
+            color: #333;
+        }
+
+     
+        .form-container {
+            margin: 30px auto;
+            max-width: 450px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            text-align: left;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        input:focus {
+            border-color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(1);
+        }
+
+        .error {
+            color: red;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        
+        #map {
+            height: 70vh;
+            margin: 20px auto;
+            border-radius: 10px;
+            width: 90%;
+            transition: height 0.3s ease;
+        }
+
+        
+        .error {
+            animation: errorMessageAnimation 0.5s ease-out;
+        }
+
+        @keyframes errorMessageAnimation {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        
+        @media (max-width: 768px) {
+            .form-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Bus Stops and Hospitals Locator</h1>
+    <div class="form-container">
+        <label for="latitude">Enter your Latitude:</label>
+        <input type="text" id="latitude" placeholder="e.g., 27.7172">
+        <label for="longitude">Enter your Longitude:</label>
+        <input type="text" id="longitude" placeholder="e.g., 85.3240">
+        <label for="radius">Enter the search radius (in meters):</label>
+        <input type="text" id="radius" placeholder="e.g., 1000">
+        <button id="generateMap">Show Places</button>
+        <p class="error" id="error"></p>
+    </div>
+    <div id="map"></div>
+</body>
+</html>

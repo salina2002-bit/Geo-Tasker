@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .documentation-section {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .doc-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .doc-title {
+            color: #96c93d;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .doc-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #96c93d;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-card h3 {
+            color: #96c93d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .doc-card-content {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .styled-button {
+            padding: 16px 32px;
+            font-size: 18px;
+            color: white;
+            background-color: #4CAF50;
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            cursor: pointer;
+            outline: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .styled-button:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .styled-button:active {
+            background-color: #3e8e41;
+            border-color: #3e8e41;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .styled-button:focus {
+            outline: none;
+        }
+
+        @keyframes buttonAnimation {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .styled-button {
+            animation: buttonAnimation 0.5s ease-out forwards;
+        }
+
+        @media (max-width: 768px) {
+            .doc-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .doc-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="dashboard.html" class="back-btn">← Back to dashboard</a>
+       
+    </div>
+    <div id="documentation" class="section documentation-section">
+        <div class="doc-container">
+            <h2 class="doc-title">Technical Documentation</h2>
+
+            <!-- App Objectives Card -->
+            <div class="doc-card">
+                <div class="icon">📱</div>
+                <h3>App Objectives</h3>
+                <div class="doc-card-content">
+                    Click to view detailed objectives
+                </div>
+                <button onclick="openFile('objectives.html')">Go to App Objectives</button>
+            </div>
+
+            <!-- Technology Stack Card -->
+            <div class="doc-card">
+                <div class="icon">⚙️</div>
+                <h3>Technology Stack</h3>
+                <div class="doc-card-content">
+                    Overview of technologies and frameworks
+                </div>
+                <button onclick="openFile('tech.html')">Go to Technology Stack</button>
+            </div>
+
+            <!-- System Components Card -->
+            <div class="doc-card">
+                <div class="icon">🔧</div>
+                <h3>System Components</h3>
+                <div class="doc-card-content">
+                    Details of system architecture
+                </div>
+                <button onclick="openFile('system.html')">Go to System Components</button>
+            </div>
+
+            <!-- User Documentation Card -->
+            <div class="doc-card">
+                <div class="icon">📖</div>
+                <h3>User Documentation</h3>
+                <div class="doc-card-content">
+                    User guides and resources
+                </div>
+                <button onclick="openFile('document.html')">Go to User Documentation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openFile(fileName) {
+            window.location.href = fileName;
+        }
+    </script>
+</body>
+</html>

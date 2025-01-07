@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Objectives</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            width: 100%;
+            color: #96c93d;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .objectives-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .objective-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .objective-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #96c93d;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .objective-item h3 {
+            color: #96c93d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .objective-item p {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .objective-item:nth-child(1) { animation-delay: 0.1s; }
+        .objective-item:nth-child(2) { animation-delay: 0.2s; }
+        .objective-item:nth-child(3) { animation-delay: 0.3s; }
+        .objective-item:nth-child(4) { animation-delay: 0.4s; }
+        .objective-item:nth-child(5) { animation-delay: 0.5s; }
+        .objective-item:nth-child(6) { animation-delay: 0.6s; }
+        .objective-item:nth-child(7) { animation-delay: 0.7s; }
+        .objective-item:nth-child(8) { animation-delay: 0.8s; }
+
+        @media (max-width: 768px) {
+            .header {
+                margin-top: 3rem;
+            }
+            
+            .back-btn {
+                top: -3rem;
+                left: 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="example.html" class="back-btn">← Back</a>
+            <h1>App Objectives</h1>
+        </div>
+        
+        <div class="objectives-grid">
+            <div class="objective-item">
+                <h3>Interactive Mapping</h3>
+                <p>Provide an intuitive platform for users to explore and visualize spatial data through interactive maps.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Geospatial Analysis</h3>
+                <p>Enable advanced tools for proximity analysis, buffer generation, and spatial querying for meaningful insights.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Data Integration</h3>
+                <p>Seamlessly integrate various data sources (API, GeoServer, GeoJSON) for flexible layer management and enhanced visualization.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Real-Time Functionality</h3>
+                <p>Display live data overlays, including weather, air quality, user location, and navigation routes.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Collaboration</h3>
+                <p>Facilitate collaborative mapping and sharing to support teamwork and community engagement.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Responsive Design</h3>
+                <p>Ensure compatibility across devices with a user-friendly interface, accessible to both technical and non-technical users.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Backend Integration</h3>
+                <p>Leverage PostGIS for efficient spatial data management and GeoServer for serving administrative boundaries and road data.</p>
+            </div>
+
+            <div class="objective-item">
+                <h3>Informed Decision-Making</h3>
+                <p>Empower users to make data-driven decisions using accessible spatial data for various applications.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

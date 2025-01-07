@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LULC Map Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.5/ol.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.5/ol.js"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>LULC Map Viewer</h1>
+    <div id="map"></div>
+    <script>
+        // OpenLayers Map Initialization
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                // Base Layer: OpenStreetMap
+                new ol.layer.Tile({
+                    source: new ol.source.OSM() 
+                }),
+                // LULC Map Layer: WMS from GeoServer
+                new ol.layer.Image({
+                    source: new ol.source.ImageWMS({
+                        url: 'http://localhost:8080/geoserver/ne/wms',
+                        params: {
+                            'LAYERS': 'ne:LULCnepal10m_mask',
+                            'SRS': 'EPSG:4326',
+                            'FORMAT': 'image/png',
+                            'STYLES': '',
+                            'BBOX': '79.9994354229418,26.32554362564523,88.33949340737779,30.517371634650626', // Set bbox for the region you want to display
+                            'WIDTH': 768,
+                            'HEIGHT': 386
+                        },
+                        serverType: 'geoserver',
+                        crossOrigin: 'anonymous'
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([84.0, 28.5]), // Center the map at Nepal
+                zoom: 7,
+                projection: 'EPSG:4326' // Use EPSG:4326 for the map view
+            })
+        });
+    </script>
+</body>
+</html>

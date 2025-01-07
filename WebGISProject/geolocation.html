@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Geocoding with PositionStack and OSM Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            height: 100vh; 
+            width: 100%;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 999;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .controls input,
+        .controls button {
+            margin: 5px;
+        }
+        .coordinates,
+        .location {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <h3>Interactive Geocoding with PositionStack and OpenStreetMap</h3>
+
+        <!-- Search by Address -->
+        <label for="address">Enter Address:</label>
+        <input type="text" id="address" placeholder="Enter address" />
+        <button onclick="getCoordinates()">Get Coordinates</button>
+        <div class="coordinates" id="coordinates"></div>
+
+        <!-- Search by Latitude and Longitude -->
+        <label for="latitude">Enter Latitude:</label>
+        <input type="number" id="latitude" placeholder="Enter latitude" step="any" />
+        <label for="longitude">Enter Longitude:</label>
+        <input type="number" id="longitude" placeholder="Enter longitude" step="any" />
+        <button onclick="getLocationFromCoords()">Get Location</button>
+        <div class="location" id="location"></div>
+
+        <!-- Current Location -->
+        <button onclick="showCurrentLocation()">Show My Location</button>
+        <div class="location" id="location"></div>
+
+        <!-- Map Toggle -->
+        <button onclick="toggleMapLayer()">Toggle Satellite / OSM</button>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        // Initialize the map
+        let map = L.map('map', {
+            zoomControl: true  
+        }).setView([0, 0], 2);  
+
+      
+        let osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        
+        let satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri'
+        });
+
+        let currentLayer = osmLayer;
+
+        function toggleMapLayer() {
+            if (map.hasLayer(currentLayer)) {
+                map.removeLayer(currentLayer);
+                currentLayer = (currentLayer === osmLayer) ? satelliteLayer : osmLayer;
+                map.addLayer(currentLayer);
+            }
+        }
+
+        const apiKey = '73e3226bc2b6346e6a3972a1f402ba63';
+
+        
+        async function getCoordinates() {
+            const address = document.getElementById('address').value;
+            if (!address) {
+                alert('Please enter an address');
+                return;
+            }
+
+            
+            const response = await fetch(`http://api.positionstack.com/v1/forward?access_key=${apiKey}&query=${encodeURIComponent(address)}`);
+            const data = await response.json();
+
+            if (data.data && data.data.length > 0) {
+                const { latitude, longitude } = data.data[0];
+                document.getElementById('coordinates').innerHTML = `Latitude: ${latitude}, Longitude: ${longitude}`;
+
+                map.setView([latitude, longitude], 15);
+                let marker = L.marker([latitude, longitude], {draggable: true}).addTo(map)
+                    .bindPopup('It is here')
+                    .openPopup();
+
+                marker.on('dragend', async function (e) {
+                    const newLatLng = e.target.getLatLng();
+                    const newLat = newLatLng.lat;
+                    const newLng = newLatLng.lng;
+
+                    document.getElementById('coordinates').innerHTML = `Latitude: ${newLat}, Longitude: ${newLng}`;
+
+                    marker.setPopupContent(`It is here: Lat: ${newLat}, Lng: ${newLng}`);
+
+                    map.setView([newLat, newLng], 15);
+
+                    const location = await getLocationFromCoordinates(newLat, newLng);
+                    document.getElementById('location').innerHTML = `Location: ${location}`;
+
+                    marker.setPopupContent(`It is here: Lat: ${newLat}, Lng: ${newLng}, Location: ${location}`);
+                });
+            } else {
+                alert('Location not found');
+            }
+        }
+
+        
+        function showCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    map.setView([lat, lon], 15);
+
+                    let marker = L.marker([lat, lon]).addTo(map)
+                        .bindPopup('You are here!')
+                        .openPopup();
+
+                    document.getElementById('location').innerHTML = `Latitude: ${lat}, Longitude: ${lon}`;
+
+                }, function(error) {
+                    alert('Geolocation failed');
+                });
+            } else {
+                alert('Geolocation not supported by this browser.');
+            }
+        }
+
+        
+        async function getLocationFromCoordinates(lat, lon) {
+            const response = await fetch(`http://api.positionstack.com/v1/reverse?access_key=${apiKey}&query=${lat},${lon}`);
+            const data = await response.json();
+            if (data.data && data.data.length > 0) {
+                return data.data[0].label;  
+            } else {
+                return 'Location not found';
+            }
+        }
+
+        
+        async function getLocationFromCoords() {
+            const lat = parseFloat(document.getElementById('latitude').value);
+            const lon = parseFloat(document.getElementById('longitude').value);
+
+            if (isNaN(lat) || isNaN(lon)) {
+                alert('Please enter valid latitude and longitude values');
+                return;
+            }
+
+            
+            map.setView([lat, lon], 15);
+
+            
+            const location = await getLocationFromCoordinates(lat, lon);
+            document.getElementById('location').innerHTML = `Location: ${location}`;
+
+           
+            let marker = L.marker([lat, lon]).addTo(map)
+                .bindPopup(`It is here: Lat: ${lat}, Lng: ${lon}, Location: ${location}`)
+                .openPopup();
+        }
+    </script>
+</body>
+</html>

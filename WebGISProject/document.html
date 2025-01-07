@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            width: 100%;
+            color: #96c93d;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .content {
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #96c93d;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .section p {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .list {
+            color: #e2e8f0;
+            margin-left: 20px;
+            list-style-type: disc;
+        }
+
+        .list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-stack-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .tech-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #96c93d;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="example.html" class="back-btn">← Back</a>
+            <h1>User Documentation</h1>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>Login Page</h2>
+                <p>New users can create an account by clicking "Create Account" and filling in their details. Afterward, log in using your credentials.</p>
+            </div>
+
+            <div class="section">
+                <h2>Main Page</h2>
+                <p>Once logged in, the Main Page provides information about Geotasker and its features, along with details about the developer team.</p>
+            </div>
+
+            <div class="section">
+                <h2>Get Started</h2>
+                <p>Click the Get Started button to proceed to the Main Dashboard.</p>
+            </div>
+
+            <div class="section">
+                <h2>Main Dashboard</h2>
+                <p>The Main Dashboard contains various components and sections that can be accessed and interacted with.</p>
+            </div>
+
+            <div class="section">
+                <h2>Components and Functionalities</h2>
+                <p>Each component offers distinct functionalities such as Real-time Weather, UV Index, Route Instructions, and more.</p>
+            </div>
+
+            <div class="section">
+                <h2>Section Buttons</h2>
+                <p>Click the dedicated buttons for each section to access detailed information and functionalities.</p>
+            </div>
+
+            <div class="section">
+                <h2>Additional Information</h2>
+                <p>If user wants to know about the GeoTasker objectives,Technology Stack, APIs then goto the bottom page of dashboard and explore.</p>
+
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Rating Option</h2>
+                <p>At the end of the experience, users can rate Geotasker based on their experience using the app.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

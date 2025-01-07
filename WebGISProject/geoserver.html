@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoServer WMS with Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-tilelayer-wms"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        #location {
+            border-radius: 10px;
+            border: 2px solid grey;
+            background-color: white;
+            font-size: 2rem;
+            transition: transform 0.4s;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        #location:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>GeoServer WMS Layers with Leaflet</h1>
+    <div id="map"></div>
+
+    <script>
+        
+        var map = L.map('map').setView([28.3949, 84.1240], 7);
+
+        
+        var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        
+        var overlayLayers = {};
+
+        
+        var layerControl = L.control.layers({ "Base Layer": baseLayer }, overlayLayers).addTo(map);
+
+        
+        const geojsonFiles = [
+            { path: './data.geojson', name: "Student's Location" },
+            { path: './municipality.geojson', name: 'Municipality', color: 'green' },
+            { path: './district.geojson', name: 'District', color: 'blue' },
+            { path: './province.geojson', name: 'Province', color: 'red' },
+            { path: './schools.geojson', name: 'Schools' },
+            { path: './School5km.geojson', name: 'Schools within 5km' }
+        ];
+
+        
+        const schoolIcon = L.icon({
+            iconUrl: 'https://cdn-icons-png.flaticon.com/512/3176/3176294.png',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [10, -32]
+        });
+
+        const schoolCoords = [27.012361, 87.994639];
+        const schoolMarker = L.marker(schoolCoords, { icon: schoolIcon })
+            .bindPopup("<strong>Shree Rastriya Secondary School</strong><br>This school is located within 5 km of my hometown.")
+            .addTo(map);
+
+        layerControl.addOverlay(schoolMarker, 'Shree Rastriya Secondary School');
+
+        
+        const homeIcon = L.icon({
+            iconUrl: 'https://cdn-icons-png.flaticon.com/512/1946/1946488.png',
+            iconSize: [10,10],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+        });
+
+       
+        geojsonFiles.forEach(file => {
+            axios.get(file.path)
+                .then(response => {
+                    const layer = L.geoJSON(response.data, {
+                        style: { color: file.color || 'black', weight: 2 },
+                        onEachFeature: (feature, layer) => {
+                            let popupContent = `<strong>${file.name}</strong><br>`;
+                            if (feature.properties) {
+                                for (let key in feature.properties) {
+                                    popupContent += `${key}: ${feature.properties[key]}<br>`;
+                                }
+                            }
+                            layer.bindPopup(popupContent);
+                        },
+                        pointToLayer: (feature, latlng) => {
+                            if (file.name === "Student's Location") {
+                                return L.marker(latlng, { icon: homeIcon });
+                            }
+                            return L.circleMarker(latlng);
+                        }
+                    }).addTo(map); 
+
+                    overlayLayers[file.name] = layer;
+                    layerControl.addOverlay(layer, file.name);
+                })
+                .catch(error => console.error(`Error loading ${file.name}:`, error));
+        });
+        const wmsLayers = {
+            "District WMS": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:NEW_DISTRICT',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326',
+                bbox: function () {
+                    var mapBounds = map.getBounds();
+                    return mapBounds.getWest() + "," + mapBounds.getSouth() + "," + mapBounds.getEast() + "," + mapBounds.getNorth();
+                }
+            }),
+            "Boundary": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:nepal_boundary',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "Roads": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:roadd',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "Footpath": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:footpath',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "Metalled Road": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:metalled',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "Main Trail": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:main trail',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "Highway": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:highway',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "Gravelled Road": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:gravelled',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            }),
+            "DEM": L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+                layers: 'ne:nepaldem',
+                format: 'image/png',
+                transparent: true,
+                srs: 'EPSG:4326'
+            })
+        };
+        var districtLayer = L.tileLayer.wms('http://localhost:8080/geoserver/ne/wms', {
+            layers: 'ne:NEW_DISTRICT', 
+            format: 'image/png',  
+            transparent: true,  
+            srs: 'EPSG:4326' 
+        }).addTo(map); 
+
+       
+        layerControl.addOverlay(districtLayer, 'District Thematic Map');
+
+        
+        Object.entries(wmsLayers).forEach(([name, layer]) => {
+            layer.addTo(map); 
+            layerControl.addOverlay(layer, name);
+        });
+        
+    </script>
+</body>
+</html>

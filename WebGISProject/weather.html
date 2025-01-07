@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Weather and UV Index Info</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script src="https://unpkg.com/leaflet-providers/leaflet-providers.js"></script>
+
+    <script src="https://unpkg.com/leaflet-heat/dist/leaflet-heat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-around;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        #welcome-message {
+            background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+            padding: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: fadeInDown 1s ease;background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+            padding: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: fadeInDown 1s ease;
+        }
+        #map {
+            height: 85vh;
+            margin: 20px;
+            width: calc(100% - 40px);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease;
+        }
+        #controls {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeInUp 1s ease;
+        }
+        #location-input {
+            width: 300px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        #location-input:focus {
+            border-color: #2a5298;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
+        }
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        #radio-buttons {
+            text-align: center;
+            margin: 20px 0;
+            animation: fadeIn 1s ease;
+        }
+        #radio-buttons label {
+            margin-right: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        #radio-buttons label:hover {
+            background-color: rgba(42,82,152,0.1);
+        }
+        .table-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 1s ease;
+        }
+        #marker-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        #marker-table th {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #marker-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.3s ease;
+        }
+        #marker-table tr:hover td {
+            background-color: #f5f8ff;
+        }
+         /* Animation Keyframes */
+         @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .main-content #marker-table {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #map {
+                height: 70vh;
+                margin: 10px;
+            }
+
+            #controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #location-input {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="#" onclick="showPage('main')">Weather Map</a>
+            <a href="#" onclick="showPage('data')">Data Table</a>
+            <a href="#" onclick="downloadTableData()" id="download-link" style="display: none;">Download CSV</a>
+        </div>
+    </nav>
+    <div id="main-page" class="main-content">
+        <div id="welcome-message" class="animate__animated animate__fadeIn">
+            Welcome, viewers, to an exciting way to explore weather information!
+        </div>
+        <div id="radio-buttons">
+            <label><input type="radio" name="infoType" value="weather" checked> Real-Time Weather</label>
+            <label><input type="radio" name="infoType" value="uv"> UV Index</label>
+        </div>
+        <div id="controls">
+            <input type="text" id="location-input" placeholder="Enter location">
+            <button onclick="getSelectedInfo()">Search</button>
+            <button onclick="enableHeatmap()">T-Heatmap</button>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <!-- Separate data page -->
+    <div id="data-page" class="table-container" style="display: none;">
+        <h2 class="animate__animated animate__fadeInDown">Weather Data Table</h2>
+        <table id="marker-table">
+            <thead>
+                <tr>
+                    <th>Location Name</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Temperature (°C)</th>
+                    <th>Humidity (%)</th>
+                </tr>
+            </thead>
+            <tbody id="marker-table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+    
+        const weatherApiKey = '6afd3ca83ec2d3e2d109dd3ae26cdf15';
+        const uvApiKey = 'openuv-c1cb89rm5f48p7o-io';
+        const weatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+        const uvApiUrl = 'https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lon}&alt=${alt}&dt=${dt}';
+
+        const map = L.map('map').setView([27.7, 85.3], 13); 
+
+        // OpenStreetMap base layer
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // satellite imagery layer
+        const satelliteLayer = L.tileLayer.provider('Esri.WorldImagery');
+        const baseLayers = {
+            "OpenStreetMap": osmLayer,
+            "Satellite Imagery": satelliteLayer
+        };
+        L.control.layers(baseLayers).addTo(map);
+
+        // Array to store markers for heatmap
+        let markers = [];
+
+        
+        function fetchWeather(lat, lon, marker) {
+            const url = `${weatherApiUrl}?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        const weatherInfo = `
+                            <b>Weather in ${data.name}, ${data.sys.country}</b><br>
+                            <strong>Latitude:</strong> ${lat}<br>
+                            <strong>Longitude:</strong> ${lon}<br>
+                            <strong>Temperature:</strong> ${data.main.temp} °C<br>
+                            <strong>Humidity:</strong> ${data.main.humidity} %<br>
+                            <strong>Weather:</strong> ${data.weather[0].description}<br>
+                            <strong>Wind Speed:</strong> ${data.wind.speed} m/s
+                        `;
+                        marker.bindPopup(weatherInfo).openPopup();
+
+                        // Store the marker's position and temperature for heatmap
+                        markers.push([lat, lon, data.main.temp]);
+
+                        // Add data to table
+                        addMarkerToTable(lat, lon, data.main.temp);
+                    } else {
+                        alert('Unable to fetch weather data.');
+                    }
+                })
+                .catch(error => alert('Error fetching weather data: ' + error));
+        }
+        function enableHeatmap() {
+            map.eachLayer((layer) => {
+                if (layer.options && layer.options.radius) {
+                    map.removeLayer(layer);
+                }
+            });
+        
+            // Get data from the table
+            const rows = document.getElementById('marker-table-body').rows;
+            let points = [];
+        
+            for (let row of rows) {
+                const lat = parseFloat(row.cells[1].textContent);  
+                const lon = parseFloat(row.cells[2].textContent);  
+                const temp = parseFloat(row.cells[3].textContent); 
+        
+                if (!isNaN(lat) && !isNaN(lon) && !isNaN(temp)) {
+                    points.push([lat, lon, temp/50]); 
+                }
+                let color;
+                if (temp <= 8) {
+                    color = '#00FF00';
+                } else if (temp <= 15) {
+                    color = '#FFFF00'; 
+                } else {
+                    color = '#FF0000'; 
+                }
+        
+                L.circleMarker([lat, lon], {
+                    radius: 8,
+                    fillColor: color,
+                    color: color,
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map).bindPopup(`Temperature: ${temp}°C`);
+            }
+            if (points.length > 0) {
+                L.heatLayer(points, {
+                    radius: 25,
+                    blur: 15,
+                    maxZoom: 10,
+                    max: 1.0,
+                    gradient: {
+                        0.4: 'blue',
+                        0.6: 'lime',
+                        0.8: 'yellow',
+                        1.0: 'red'
+                    }
+                }).addTo(map);
+            } else {
+                alert('No temperature data available for heatmap. Please search for some locations first.');
+            }
+        }
+        function getSelectedInfo() {
+            const location = document.getElementById('location-input').value;
+            const infoType = document.querySelector('input[name="infoType"]:checked').value;
+            const url = `${weatherApiUrl}?q=${location}&appid=${weatherApiKey}&units=metric`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        const lat = data.coord.lat;
+                        const lon = data.coord.lon;
+
+                        map.setView([lat, lon], 13);
+
+                        const marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+
+                        if (infoType === 'weather') {
+                            fetchWeather(lat, lon, marker);
+                        } else if (infoType === 'uv') {
+                            fetchUV(lat, lon, marker);
+                        }
+
+                        // Update data when marker is dragged
+                        marker.on('dragend', function() {
+                            const position = marker.getLatLng();
+                            if (infoType === 'weather') {
+                                fetchWeather(position.lat, position.lng, marker);
+                            } else if (infoType === 'uv') {
+                                fetchUV(position.lat, position.lng, marker);
+                            }
+                        });
+                    } else {
+                        alert('Location not found.');
+                    }
+                })
+                .catch(error => alert('Error fetching data: ' + error));
+        }
+        function fetchUV(lat, lon, marker) {
+            const alt = 0; 
+            const dt = new Date().toISOString();
+        
+            const url = `https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lon}&alt=${alt}&dt=${dt}`;
+        
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'x-access-token': uvApiKey
+                }
+            })
+            .then((response) => response.json())
+        .then((data) => {
+            if (data && data.result) {
+                let uvIndex = data.result.uv;
+                let riskLevel = '';
+                if (uvIndex >= 0 && uvIndex <= 2) {
+                    riskLevel = 'Low (No risk to the average person, Sun Burn Time-1 Hour+)';
+                } else if (uvIndex >= 3 && uvIndex <= 5) {
+                    riskLevel = 'Moderate (Little risk, use SPF 15+ sunscreen, Sun Burn Time-40Minutes)';
+                } else if (uvIndex >= 6 && uvIndex <= 7) {
+                    riskLevel = 'High (High risk, use SPF 30+ sunscreen, cover up,Sun Burn Time-30Minutes)';
+                } else if (uvIndex >= 8 && uvIndex <= 10) {
+                    riskLevel = 'Very High (Avoid prolonged exposure, cover up),Sun Burn Time-20Minutes';
+                } else if (uvIndex >= 11) {
+                    riskLevel = 'Extreme (Stay indoors, avoid exposure),Sun Burn Time-less than 15Minutes';
+                }
+                const uvInfo = `
+                    <b>UV Index Information</b><br>
+                    <strong>Latitude:</strong> ${lat}<br>
+                    <strong>Longitude:</strong> ${lon}<br>
+                    <strong>Altitude:</strong> ${alt} meters<br>
+                    <strong>Date:</strong> ${dt}<br>
+                    <strong>UV Index:</strong> ${uvIndex}<br>
+                    <strong>Risk Level:</strong> ${riskLevel}<br>
+                    <strong>Max UV Index:</strong> ${data.result.uv_max} (at ${data.result.uv_max_time})<br>
+                    <strong>Ozone Level:</strong> ${data.result.ozone} DU<br>
+                    <strong>Ozone Data Time:</strong> ${data.result.ozone_time}
+                `;
+                marker.bindPopup(uvInfo).openPopup();
+            } else {
+                alert('Unable to fetch UV Index data.');
+            }
+        })
+        .catch((error) => alert('Error fetching UV data: ' + error));
+}
+function addMarkerToTable(lat, lon, temp) {
+    const tableBody = document.getElementById('marker-table-body');
+    const row = tableBody.insertRow();
+    fetch(`${weatherApiUrl}?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.cod === 200) {
+                row.innerHTML = `
+                    <td>${data.name}</td>
+                    <td>${lat}</td>
+                    <td>${lon}</td>
+                    <td>${temp}</td>
+                    <td>${data.main.humidity}</td>
+                `;
+            }
+        });
+}
+function showPage(pageId) {
+    document.getElementById('main-page').style.display = pageId === 'main' ? 'block' : 'none';
+    document.getElementById('data-page').style.display = pageId === 'data' ? 'block' : 'none';
+    document.getElementById('download-link').style.display = pageId === 'data' ? 'inline-block' : 'none';
+    
+    if (pageId === 'main') {
+        map.invalidateSize();
+    }
+}
+
+function downloadTableData() {
+    const table = document.getElementById('marker-table');
+    let csv = [];
+    let headers = [];
+    for (let cell of table.rows[0].cells) {
+        headers.push(cell.textContent);
+    }
+    csv.push(headers.join(','));
+    for (let i = 1; i < table.rows.length; i++) {
+        let row = [];
+        for (let cell of table.rows[i].cells) {
+            row.push('"' + cell.textContent + '"');
+        }
+        csv.push(row.join(','));
+    }
+    const csvContent = csv.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (navigator.msSaveBlob) { 
+        navigator.msSaveBlob(blob, 'weather_data.csv');
+    } else {
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', 'weather_data.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}      
+
+    </script>
+</body>
+</html>
